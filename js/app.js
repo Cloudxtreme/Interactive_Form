@@ -1,7 +1,17 @@
 // Set focus on the first text field when the page load
+$("input[type='text']")[0].focus();//focus first
 
 // Job Role: if "Other" option is selected, reveal a text field with id "other-title" and placeholder "Your Title"
-
+var titleField= "<input type=\"text\" id=\"other-title\" placeholder=\"Your Title\">";
+$('#title').parent().append(titleField);
+$('#other-title').hide();
+$('#title').on("change",function(){
+  if ($("#title").val()=='other'){
+    $('#other-title').show();
+  } else {
+    $('#other-title').hide();
+  }
+})
 // T-Shirt Info: Display condition
 //1. If the user selects "Theme - JS Puns" then the color menu should only display "Cornflower Blue," "Dark Slate Grey," and "Gold."
 //2. If the user selects "Theme - I ♥ JS" then the color menu should only display "Tomato," "Steel Blue," and "Dim Grey."
