@@ -12,14 +12,51 @@ $('#title').on("change",function(){
     $('#other-title').hide();
   }
 })
-// T-Shirt Info: Display condition
-//1. If the user selects "Theme - JS Puns" then the color menu should only display "Cornflower Blue," "Dark Slate Grey," and "Gold."
-//2. If the user selects "Theme - I ♥ JS" then the color menu should only display "Tomato," "Steel Blue," and "Dim Grey."
+//Function add class to all options of each group
+function grouping(option, valueList, type ,className){
+  $(option)
+    .filter(function() {
+      return $.inArray($( this ).attr(type), valueList) !== -1
+    })
+    .addClass(className);
+}
+//If one activity of a group is selected, selected activity is active and checked, the rest of the group is disable
+function filterInput(list){
+  $(".activities "+list).on("change",function(){
+    if ($(this).is(':checked')){
+      $(list).not(this).attr("disabled", true)
+      } else {
+      $(list).not(this).attr("disabled", false)
+    }
+  })
+}
 
+// T-Shirt Info: Display condition
+//Organize colors to specific theme list. Better for future edit
+var theme1Color =["cornflowerblue","darkslategrey", "gold"]
+var theme2Color =["tomato", "steelblue", "dimgrey"]
+
+grouping("#color option",theme1Color,"value","theme1")
+grouping("#color option",theme2Color,"value","theme2")
+
+$("#design").on("change",function(){
+  $("#color option").show();
+  if ($(this).val()=="js puns"){
+    $("#color option").not(".theme1").hide();
+  } else {
+    $("#color option").not(".theme2").hide();
+  }
+})
 // Register for Activities
 //Grouping activities which are the same time together
+var tue9to12 =["js-frameworks", "express"]
+var tue1to4 =["js-libs", "node"]
+grouping(".activities input",tue9to12, "name", "time1")
+grouping(".activities input",tue1to4, "name", "time2")
 //If one activity of a group is selected, selected activity is active and checked, the rest of the group is disable
-//If none of activities in the same group are selected, all activities are active and uncheck
+filterInput('.time1')
+filterInput('.time2')
+
 
 // Display total cost
 
