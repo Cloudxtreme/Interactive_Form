@@ -1,3 +1,36 @@
+//FUNCTION:
+//1. Add class to all options of each group
+function grouping(option, valueList, type ,className){
+  $(option)
+    .filter(function() {
+      return $.inArray($( this ).attr(type), valueList) !== -1
+    })
+    .addClass(className);
+}
+//2. Disable other activities the same time with selected activity
+function filterInput(list){
+  $(".activities "+list).on("change",function(){
+    if ($(this).is(':checked')){
+      $(list).not(this).attr("disabled", true)
+      } else {
+      $(list).not(this).attr("disabled", false)
+    }
+  })
+}
+//3. Retrieve all prices from the Activities list
+function price(){
+  $(".activities ").val();
+}
+//4. Get cost from label
+function getCost(text){
+  for (var i=0;i< text.length; i++){
+    if (text[i].startsWith('$')){
+      return parseInt(text[i].replace("$", ""));
+    }
+  }
+}
+
+//ACTION
 // Set focus on the first text field when the page load
 $("input[type='text']")[0].focus();//focus first
 
@@ -12,25 +45,6 @@ $('#title').on("change",function(){
     $('#other-title').hide();
   }
 })
-//Function add class to all options of each group
-function grouping(option, valueList, type ,className){
-  $(option)
-    .filter(function() {
-      return $.inArray($( this ).attr(type), valueList) !== -1
-    })
-    .addClass(className);
-}
-//If one activity of a group is selected, selected activity is active and checked, the rest of the group is disable
-function filterInput(list){
-  $(".activities "+list).on("change",function(){
-    if ($(this).is(':checked')){
-      $(list).not(this).attr("disabled", true)
-      } else {
-      $(list).not(this).attr("disabled", false)
-    }
-  })
-}
-
 // T-Shirt Info: Display condition
 //Organize colors to specific theme list. Better for future edit
 var theme1Color =["cornflowerblue","darkslategrey", "gold"]
@@ -57,8 +71,24 @@ grouping(".activities input",tue1to4, "name", "time2")
 filterInput('.time1')
 filterInput('.time2')
 
-
 // Display total cost
+costHTML = '<div id=\'cost\' style="font-weight: bold;display:none">Total Cost: <cost></cost></div>';
+var cost = 0;
+$('.activities').append(costHTML);
+$('.activities input').on("change",function(){
+  if ($('.activities input').is(':checked') == false){
+    $("#cost").hide();
+  } else {
+    $("#cost").show();
+  }
+  text = $(this).parent().text().split(' ')
+  if ($(this).is(':checked')){
+    cost += getCost(text);
+  } else {
+    cost -= getCost(text);
+  }
+  $("cost").empty().append('$'+cost);
+})
 
 // Display Payment Info based on chosen payment option
 
