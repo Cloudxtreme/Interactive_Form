@@ -91,7 +91,22 @@ $('.activities input').on("change",function(){
 })
 
 // Display Payment Info based on chosen payment option
-
+$("#payment").parent().addClass("paymentSection");
+$(".paymentSection > div").hide();
+$("#payment").on("change",function(){
+  $(".paymentSection > div").hide();
+  switch ($("#payment").val()){
+    case 'credit card':
+      $("#credit-card").show();
+      break
+    case 'paypal':
+      $(".paymentSection > div:nth-last-child(2)").show();
+      break
+    case 'bitcoin':
+      $(".paymentSection > div:nth-last-child(1)").show();
+      break
+  }
+})
 // Form validation. Display error messages if:
 // 1.Name field is empty
 // 2.Email field must be a validly formatted e-mail address. Use a regular expression to get this requirement.
