@@ -38,32 +38,32 @@ function validate(field, label, messageIfEmpty, messageIfUnvalid){
       if ($(this).val() ==''){
         label.addClass('empty')
         label.append('<text>'+messageIfEmpty+'</text>')
+        $('.empty').css({'color':'red','font-weight':'bold'})
       }
       else if($(this).val() !=='' && field == '#mail' && filter.test($(field).val()) == false){
         label.addClass('empty')
         label.append('<text>'+messageIfUnvalid+'</text>')
+        $('.empty').css({'color':'red','font-weight':'bold'})
       }
       else {
         label.children('text').remove()
         label.removeAttr('style')
       }
-      $('.empty').css({'color':'red','font-weight':'bold'})
   })
 }
+//6. Get label of field
+function getLabel(field){
+    return $("label[for='"+$(field).attr('id')+"']");
+}
+
+$nameLabel = getLabel('#name')
+$emailLabel = getLabel('#mail')
+$ccnumLabel = getLabel('#cc-num')
+$zipLabel = getLabel('#zip')
+$cvvLabel = getLabel('#cvv')
+$colorLabel = getLabel('#color')
+
 var filter = /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
-//6. Validate email
-function validateEmail(field, label, withMessage){
-
-  $(field).on('keyup',function(){
-    label.children('text').remove()
-    if (filter.test($(field).val()) == false){
-
-    } else {
-      label.children('text').remove()
-      label.removeAttr('style')
-    }
-  })
-}
 //ACTION
 // Set focus on the first text field when the page load
 $("input[type='text']")[0].focus();//focus first
@@ -89,9 +89,11 @@ var theme2Color =["tomato", "steelblue", "dimgrey"]
 
 grouping("#color option",theme1Color,"value","theme1")
 grouping("#color option",theme2Color,"value","theme2")
-
+$("#color").hide();//by default
+$colorLabel.hide();
 $("#design").on("change",function(){
-  $("#color option").show();
+  $("#color, #color option").show();
+  $colorLabel.show();
   $toDesignLegend.children('.message').remove();
   switch($(this).val()){
     case "js puns":
@@ -102,6 +104,8 @@ $("#design").on("change",function(){
       break
     default:
       addMessage('Don\'t forget pick your shirt',$toDesignLegend)
+      $("#color").hide();
+      $colorLabel.hide();
   }
 })
 //ACTIVITIES
@@ -157,13 +161,6 @@ $("#payment").on("change",function(){
       addMessage('Please select your payment method',$toPaymentLegend)
   }
 })
-// Form validation. Display error messages if:
-// 5."Credit card" info is empty
-$nameLabel = $("label[for='"+$('#name').attr('id')+"']");
-$emailLabel = $("label[for='"+$('#mail').attr('id')+"']");
-$ccnumLabel = $("label[for='"+$('#cc-num').attr('id')+"']");
-$zipLabel = $("label[for='"+$('#zip').attr('id')+"']");
-$cvvLabel = $("label[for='"+$('#cvv').attr('id')+"']");
 
 //Trigger when click
 $("button").click(function(e){
