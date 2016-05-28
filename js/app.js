@@ -17,11 +17,7 @@ function filterInput(list){
     }
   })
 }
-//3. Retrieve all prices from the Activities list
-function price(){
-  $(".activities ").val();
-}
-//4. Get cost from label
+//3. Extract cost from label
 function getCost(text){
   for (var i=0;i< text.length; i++){
     if (text[i].startsWith('$')){
@@ -29,12 +25,50 @@ function getCost(text){
     }
   }
 }
+//4. Validate unselected option and display message
+function addMessage(message, toLocation){
+  messageHTML='<label class=\'message\' style=\'font-size:0.8em;\'>'+ message +'</label> '
+  toLocation.append(messageHTML);
+  $('.message').css('color','red')
+}
+//5. Validate empty fields, highlight label, and display message
+function validate(field, label, messageIfEmpty, messageIfUnvalid){
+  $(field).on('keyup',function(){
+    label.children('text').remove()
+      if ($(this).val() ==''){
+        label.addClass('empty')
+        label.append('<text>'+messageIfEmpty+'</text>')
+      }
+      else if($(this).val() !=='' && field == '#mail' && filter.test($(field).val()) == false){
+        label.addClass('empty')
+        label.append('<text>'+messageIfUnvalid+'</text>')
+      }
+      else {
+        label.children('text').remove()
+        label.removeAttr('style')
+      }
+      $('.empty').css({'color':'red','font-weight':'bold'})
+  })
+}
+var filter = /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
+//6. Validate email
+function validateEmail(field, label, withMessage){
 
+  $(field).on('keyup',function(){
+    label.children('text').remove()
+    if (filter.test($(field).val()) == false){
+
+    } else {
+      label.children('text').remove()
+      label.removeAttr('style')
+    }
+  })
+}
 //ACTION
 // Set focus on the first text field when the page load
 $("input[type='text']")[0].focus();//focus first
 
-// Job Role: if "Other" option is selected, reveal a text field with id "other-title" and placeholder "Your Title"
+//Other-title field
 var titleField= "<input type=\"text\" id=\"other-title\" placeholder=\"Your Title\">";
 $('#title').parent().append(titleField);
 $('#other-title').hide();
@@ -47,6 +81,9 @@ $('#title').on("change",function(){
 })
 // T-Shirt Info: Display condition
 //Organize colors to specific theme list. Better for future edit
+$toDesignLegend = $('.shirt').children('legend')
+$toPaymentLegend = $('#payment').siblings('legend')
+
 var theme1Color =["cornflowerblue","darkslategrey", "gold"]
 var theme2Color =["tomato", "steelblue", "dimgrey"]
 
@@ -55,12 +92,19 @@ grouping("#color option",theme2Color,"value","theme2")
 
 $("#design").on("change",function(){
   $("#color option").show();
-  if ($(this).val()=="js puns"){
-    $("#color option").not(".theme1").hide();
-  } else {
-    $("#color option").not(".theme2").hide();
+  $toDesignLegend.children('.message').remove();
+  switch($(this).val()){
+    case "js puns":
+      $("#color option").not(".theme1").hide();
+      break
+    case "heart js":
+      $("#color option").not(".theme2").hide();
+      break
+    default:
+      addMessage('Don\'t forget pick your shirt',$toDesignLegend)
   }
 })
+//ACTIVITIES
 // Register for Activities
 //Grouping activities which are the same time together
 var tue9to12 =["js-frameworks", "express"]
@@ -74,12 +118,16 @@ filterInput('.time2')
 // Display total cost
 costHTML = '<div id=\'cost\' style="font-weight: bold;display:none">Total Cost: <cost></cost></div>';
 var cost = 0;
+$toActivityLegend = $('.activities').children('legend')
 $('.activities').append(costHTML);
-$('.activities input').on("change",function(){
+$('.activities input').on("click",function(){
+  $toActivityLegend.children('.message').remove()
   if ($('.activities input').is(':checked') == false){
     $("#cost").hide();
+    addMessage('Please choose at least one activity', $toActivityLegend)
   } else {
     $("#cost").show();
+    $toActivityLegend.children('message').remove()
   }
   text = $(this).parent().text().split(' ')
   if ($(this).is(':checked')){
@@ -89,30 +137,48 @@ $('.activities input').on("change",function(){
   }
   $("cost").empty().append('$'+cost);
 })
-
+//PAYMENT
 // Display Payment Info based on chosen payment option
-$("#payment").parent().addClass("paymentSection");
-$(".paymentSection > div").hide();
+$("#payment").nextAll('div').hide();
 $("#payment").on("change",function(){
-  $(".paymentSection > div").hide();
+  $("#payment").nextAll('div').hide();
+  $toPaymentLegend.children('.message').remove();
   switch ($("#payment").val()){
     case 'credit card':
       $("#credit-card").show();
       break
     case 'paypal':
-      $(".paymentSection > div:nth-last-child(2)").show();
+      $('#payment').nextAll('div:nth-last-child(2)').show();
       break
     case 'bitcoin':
-      $(".paymentSection > div:nth-last-child(1)").show();
+      $('#payment').nextAll('div:nth-last-child(1)').show();
       break
+    case 'select_method':
+      addMessage('Please select your payment method',$toPaymentLegend)
   }
 })
 // Form validation. Display error messages if:
-// 1.Name field is empty
-// 2.Email field must be a validly formatted e-mail address. Use a regular expression to get this requirement.
-// 3.At least one activity must be checked
-// 4.Payment option must be selected.
 // 5."Credit card" info is empty
+$nameLabel = $("label[for='"+$('#name').attr('id')+"']");
+$emailLabel = $("label[for='"+$('#mail').attr('id')+"']");
+$ccnumLabel = $("label[for='"+$('#cc-num').attr('id')+"']");
+$zipLabel = $("label[for='"+$('#zip').attr('id')+"']");
+$cvvLabel = $("label[for='"+$('#cvv').attr('id')+"']");
+
+//Trigger when click
+$("button").click(function(e){
+  e.preventDefault();
+  validate('#name',$nameLabel, ' (Your name cannot be blank)','')
+  validate('#mail',$emailLabel, ' (Your email cannot be blank)', ' (Your email is not valid)')
+  validate('#cc-num',$ccnumLabel, ' (required)','')
+  validate('#zip',$zipLabel, ' (required)','')
+  validate('#cvv',$cvvLabel, ' (required)','')
+  $('input[type="text"]').trigger('keyup');
+  $('input[type="email"]').trigger('keyup');
+  $('#design').trigger('change');
+  $('.activities').trigger('change');
+  $('#payment').trigger('change');
+})
 
 //X-credit: Hide the "Color" label and select menu until a T-Shirt design is selected from the "Design" menu.
 
