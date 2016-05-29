@@ -1,60 +1,5 @@
-//FUNCTION:
-//1. Add class to all options of each group
-function grouping(option, valueList, type ,className){
-  $(option)
-    .filter(function() {
-      return $.inArray($( this ).attr(type), valueList) !== -1
-    })
-    .addClass(className);
-}
-//2. Disable other activities the same time with selected activity
-function filterInput(list){
-  $(".activities "+list).on("change",function(){
-    if ($(this).is(':checked')){
-      $(list).not(this).attr("disabled", true)
-      } else {
-      $(list).not(this).attr("disabled", false)
-    }
-  })
-}
-//3. Extract cost from label
-function getCost(text){
-  for (var i=0;i< text.length; i++){
-    if (text[i].startsWith('$')){
-      return parseInt(text[i].replace("$", ""));
-    }
-  }
-}
-//4. Validate unselected option and display message
-function addMessage(message, toLocation){
-  messageHTML='<label class=\'message\' style=\'font-size:0.8em;\'>'+ message +'</label> '
-  toLocation.append(messageHTML);
-  $('.message').css('color','red')
-}
-//5. Validate empty fields, highlight label, and display message
-function validate(field, label, messageIfEmpty, messageIfUnvalid){
-  $(field).on('keyup',function(){
-    label.children('text').remove()
-      if ($(this).val() ==''){
-        label.addClass('empty')
-        label.append('<text>'+messageIfEmpty+'</text>')
-        $('.empty').css({'color':'red','font-weight':'bold'})
-      }
-      else if($(this).val() !=='' && field == '#mail' && filter.test($(field).val()) == false){
-        label.addClass('empty')
-        label.append('<text>'+messageIfUnvalid+'</text>')
-        $('.empty').css({'color':'red','font-weight':'bold'})
-      }
-      else {
-        label.children('text').remove()
-        label.removeAttr('style')
-      }
-  })
-}
-//6. Get label of field
-function getLabel(field){
-    return $("label[for='"+$(field).attr('id')+"']");
-}
+$('select').addClass('turnintodropdown')
+tamingselect();
 
 $nameLabel = getLabel('#name')
 $emailLabel = getLabel('#mail')
@@ -68,12 +13,14 @@ var filter = /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_
 // Set focus on the first text field when the page load
 $("input[type='text']")[0].focus();//focus first
 
+
 //Other-title field
 var titleField= "<input type=\"text\" id=\"other-title\" placeholder=\"Your Title\">";
 $('#title').parent().append(titleField);
 $('#other-title').hide();
-$('#title').on("change",function(){
-  if ($("#title").val()=='other'){
+$(".dropcontainer li").on('click',function(){
+  if ($(this).text()=='Other'){
+    $('#title').val('other')
     $('#other-title').show();
   } else {
     $('#other-title').hide();
@@ -182,3 +129,60 @@ $("button").click(function(e){
 //X-credit: Style the "select" menus (drop down menus) on the form, so they match the styling of the text fields (see Resources links for an article on how to improve the look of select menus using CSS and JavaScript).
 
 //X-credit: Validate the credit card number so that it's a validly formatted credit card number. (see the Resources links for information on how to do this.)
+//FUNCTION:
+//1. Add class to all options of each group
+function grouping(option, valueList, type ,className){
+  $(option)
+    .filter(function() {
+      return $.inArray($( this ).attr(type), valueList) !== -1
+    })
+    .addClass(className);
+}
+//2. Disable other activities the same time with selected activity
+function filterInput(list){
+  $(".activities "+list).on("change",function(){
+    if ($(this).is(':checked')){
+      $(list).not(this).attr("disabled", true)
+      } else {
+      $(list).not(this).attr("disabled", false)
+    }
+  })
+}
+//3. Extract cost from label
+function getCost(text){
+  for (var i=0;i< text.length; i++){
+    if (text[i].startsWith('$')){
+      return parseInt(text[i].replace("$", ""));
+    }
+  }
+}
+//4. Validate unselected option and display message
+function addMessage(message, toLocation){
+  messageHTML='<label class=\'message\' style=\'font-size:0.8em;\'>'+ message +'</label> '
+  toLocation.append(messageHTML);
+  $('.message').css('color','red')
+}
+//5. Validate empty fields, highlight label, and display message
+function validate(field, label, messageIfEmpty, messageIfUnvalid){
+  $(field).on('keyup',function(){
+    label.children('text').remove()
+      if ($(this).val() ==''){
+        label.addClass('empty')
+        label.append('<text>'+messageIfEmpty+'</text>')
+        $('.empty').css({'color':'red','font-weight':'bold'})
+      }
+      else if($(this).val() !=='' && field == '#mail' && filter.test($(field).val()) == false){
+        label.addClass('empty')
+        label.append('<text>'+messageIfUnvalid+'</text>')
+        $('.empty').css({'color':'red','font-weight':'bold'})
+      }
+      else {
+        label.children('text').remove()
+        label.removeAttr('style')
+      }
+  })
+}
+//6. Get label of field
+function getLabel(field){
+    return $("label[for='"+$(field).attr('id')+"']");
+}
