@@ -111,9 +111,3 @@ function tamingselect()
 		if(!ts_check(o,c)){o.className+=o.className==''?c:' '+c;}
 	}
 }
-
-window.onload=function()
-{
-
-	// add more functions if necessary
-}

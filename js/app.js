@@ -31,29 +31,41 @@ $(".dropcontainer li").on('click',function(){
 $toDesignLegend = $('.shirt').children('legend')
 $toPaymentLegend = $('#payment').siblings('legend')
 
-var theme1Color =["cornflowerblue","darkslategrey", "gold"]
-var theme2Color =["tomato", "steelblue", "dimgrey"]
+var theme1Color =["Cornflower Blue (JS Puns shirt only)","Dark Slate Grey (JS Puns shirt only)", "Gold (JS Puns shirt only)"]
+var theme2Color =["Tomato", "Steel Blue", "Dim Grey"]
 
-grouping("#color option",theme1Color,"value","theme1")
-grouping("#color option",theme2Color,"value","theme2")
-$("#color").hide();//by default
-$colorLabel.hide();
-$("#design").on("change",function(){
-  $("#color, #color option").show();
-  $colorLabel.show();
+// grouping(".shirt>div:nth-child(4)>div>ul>li>a",theme1Color,"theme1")
+$(".shirt>div:nth-child(4)>div>ul>li>a").each(function(index,value){
+ if ($(this).text().indexOf('Puns') >=0){
+   $(this).addClass('theme1')
+ } else {
+  $(this).addClass('theme2')
+ }
+})
+// grouping(".shirt>div:nth-child(4)>div>ul>li>a",theme2Color,"theme2")
+
+$("#colors-js-puns").hide();//by default
+// $(".shirt>div:nth-child(4)>label").hide();
+$(".shirt>div:nth-child(3)>div>ul>li>a").click(function(){
+  $("#colors-js-puns").show();
+  // $(".shirt>div:nth-child(4)>label").show();
   $toDesignLegend.children('.message').remove();
-  switch($(this).val()){
-    case "js puns":
-      $("#color option").not(".theme1").hide();
-      break
-    case "heart js":
-      $("#color option").not(".theme2").hide();
-      break
-    default:
-      addMessage('Don\'t forget pick your shirt',$toDesignLegend)
-      $("#color").hide();
-      $colorLabel.hide();
-  }
+  $("#colors-js-puns>a").click(function(){
+    $('.theme1').show();
+    $('.theme2').show();
+    switch($('.shirt>div:nth-child(3)>a').text()){
+      case "Theme - JS Puns":
+        $(".shirt>div:nth-child(4)>div>ul>li>a").not(".theme1").hide();
+        break
+      case "Theme - I ♥ JS":
+        $(".shirt>div:nth-child(4)>div>ul>li>a").not(".theme2").hide();
+        break
+      default:
+        addMessage('Don\'t forget pick your shirt',$toDesignLegend)
+        $("#colors-js-puns").hide();
+        // $colorLabel.hide();
+    }
+  })
 })
 //ACTIVITIES
 // Register for Activities
@@ -90,23 +102,32 @@ $('.activities input').on("click",function(){
 })
 //PAYMENT
 // Display Payment Info based on chosen payment option
-$("#payment").nextAll('div').hide();
-$("#payment").on("change",function(){
-  $("#payment").nextAll('div').hide();
+$("fieldset:nth-child(4)>div").eq(1).hide()
+$("fieldset:nth-child(4)>div").eq(2).hide()
+$("fieldset:nth-child(4)>div").eq(3).hide()
+
+$("#payment").siblings('a').on("click",function(){
+  $('fieldset:nth-child(4)>.dropcontainer').show()
   $toPaymentLegend.children('.message').remove();
-  switch ($("#payment").val()){
-    case 'credit card':
-      $("#credit-card").show();
-      break
-    case 'paypal':
-      $('#payment').nextAll('div:nth-last-child(2)').show();
-      break
-    case 'bitcoin':
-      $('#payment').nextAll('div:nth-last-child(1)').show();
-      break
-    case 'select_method':
-      addMessage('Please select your payment method',$toPaymentLegend)
-  }
+  $('fieldset:nth-child(4)>.dropcontainer>ul>li').click(function(){
+    $('fieldset:nth-child(4)>.dropcontainer').hide()
+    $("fieldset:nth-child(4)>div").eq(1).hide()
+    $("fieldset:nth-child(4)>div").eq(2).hide()
+    $("fieldset:nth-child(4)>div").eq(3).hide()
+    switch ($(this).text()){
+      case 'Credit Card':
+        $("fieldset:nth-child(4)>div").eq(1).show();
+        break
+      case 'PayPal':
+        $("fieldset:nth-child(4)>div").eq(2).show();
+        break
+      case 'Bitcoin':
+        $("fieldset:nth-child(4)>div").eq(3).show();
+        break
+      case 'Select Payment Method':
+        addMessage('Please select your payment method',$toPaymentLegend)
+    }
+  })
 })
 
 //Trigger when click
@@ -131,7 +152,7 @@ $("button").click(function(e){
 //X-credit: Validate the credit card number so that it's a validly formatted credit card number. (see the Resources links for information on how to do this.)
 //FUNCTION:
 //1. Add class to all options of each group
-function grouping(option, valueList, type ,className){
+function grouping(option, valueList, type, className){
   $(option)
     .filter(function() {
       return $.inArray($( this ).attr(type), valueList) !== -1
